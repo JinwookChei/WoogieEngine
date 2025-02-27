@@ -14,23 +14,38 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Precompiled Header">
-      <UniqueIdentifier>{47ab3e85-6ffe-4b6b-bce5-79759f2af472}</UniqueIdentifier>
+      <UniqueIdentifier>{45bcc872-429d-4c8b-b9da-f06047662105}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{b39c134a-f7dd-4a20-9599-d39c558b69d8}</UniqueIdentifier>
     </Filter>
     <Filter Include="CommonCode">
-      <UniqueIdentifier>{e49b39e6-3b7a-4cc0-b4fa-ddf88476508a}</UniqueIdentifier>
+      <UniqueIdentifier>{ee252987-abe6-4cf6-ab44-fd19ecb81155}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Precompiled Header</Filter>
     </ClCompile>
+    <ClCompile Include="WindowsApplication.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Precompiled Header</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsApplication.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="..\CommonCode\IApplication.h">
       <Filter>CommonCode</Filter>
