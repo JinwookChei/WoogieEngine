@@ -4,7 +4,8 @@
 class WindowsApplication : public IApplication
 {
 public:
-	WindowsApplication();
+	WindowsApplication() = delete;
+	WindowsApplication(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow);
 
 	~WindowsApplication();
 
@@ -14,14 +15,24 @@ public:
 
 	ULONG __stdcall Release(void) override;
 
-	virtual void __stdcall InitializeWindow() override;
+	virtual void __stdcall InitializeMainWindow(const wchar_t* className, const wchar_t* windowText) override;
 
 	virtual void __stdcall WinPumpmessage() override;
 
 	virtual bool __stdcall ApplicationQuit() override;
 
+	const HINSTANCE GetInstanceHandle() const;
 
+	const PWSTR GetCmdLinePointer() const;
+
+	const int GetCmdShowParam() const;
 private:
+	HINSTANCE hInstance_;
+
+	PWSTR pCmdLine_;
+
+	int nCmdShow_;
+
 	Window* mainWindow_;
 
 	ULONG refCount_;

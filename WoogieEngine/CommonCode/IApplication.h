@@ -3,7 +3,7 @@
 
 class IApplication : public IUnknown
 {
-	virtual void InitializeWindow() = 0;
+	virtual void InitializeMainWindow(const wchar_t* className, const wchar_t* windowText) = 0;
 
 	virtual void WinPumpmessage() = 0;
 

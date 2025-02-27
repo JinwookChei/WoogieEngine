@@ -17,3 +17,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     return TRUE;
 }
 
+extern "C" __declspec(dllexport) void __stdcall CreateWindowsApplication(void** newApplication, HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
+{
+    IApplication* newApp = new WindowsApplication(hInstance, pCmdLine, nCmdShow);
+    *newApplication = newApp;
+}
+

@@ -1,13 +1,49 @@
 #include "stdafx.h"
 #include "WindowsApplication.h"
 
-WindowsApplication::WindowsApplication()
-	: mainWindow_(nullptr),
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+WindowsApplication* GApplication = nullptr;
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hwnd, &ps);
+
+        // All painting occurs here, between BeginPaint and EndPaint.
+
+        FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+
+        EndPaint(hwnd, &ps);
+    }
+    return 0;
+
+    }
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+
+WindowsApplication::WindowsApplication(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
+	: hInstance_(hInstance),
+    pCmdLine_(pCmdLine),
+    nCmdShow_(nCmdShow),
+    mainWindow_(nullptr),
 	refCount_(1),
 	isApplicationQuit_(false)
 {
+    GApplication = this;
 }
 
+//TODO
 WindowsApplication::~WindowsApplication()
 {
 }
@@ -34,15 +70,52 @@ ULONG __stdcall WindowsApplication::Release(void)
 	return tempRefCount;
 }
 
-void __stdcall WindowsApplication::InitializeWindow()
+void __stdcall WindowsApplication::InitializeMainWindow(const wchar_t* className, const wchar_t* windowText)
 {
+    mainWindow_ = new Window(className, windowText);
+
+    WNDCLASS wc = {};
+    wc.style = 0;                               // Window 그리기 특성.
+    wc.lpfnWndProc = WindowProc;                // 메세지 함수 지정.
+    wc.cbClsExtra = 0;                          // 추가 메모리 사용 안함.
+    wc.cbWndExtra = 0;                          // 추가 메모리 사용 안함.
+    wc.hInstance = hInstance_;                  // 인스턴스 핸들.
+    //TODO
+    wc.hIcon = 0;                               // 아이콘 설정.
+    wc.hCursor = 0;                             // 커서 설정.
+    wc.hbrBackground;                           // 백그라운드 설정.
+    wc.lpszMenuName = NULL;                     // 메뉴 사용 설정.
+    wc.lpszClassName = className;               // 윈도우 클래스 이름(식별)
+
+    RegisterClass(&wc);
+
+    if (false == mainWindow_->Initialize())
+    {
+        __debugbreak();
+    }
 }
 
+//TODO
 void __stdcall WindowsApplication::WinPumpmessage()
 {
 }
 
 bool __stdcall WindowsApplication::ApplicationQuit()
 {
-	return false;
+	return isApplicationQuit_;
+}
+
+const HINSTANCE WindowsApplication::GetInstanceHandle() const
+{
+    return hInstance_;
+}
+
+const PWSTR WindowsApplication::GetCmdLinePointer() const
+{
+    return pCmdLine_;
+}
+
+const int WindowsApplication::GetCmdShowParam() const
+{
+    return nCmdShow_;
 }
