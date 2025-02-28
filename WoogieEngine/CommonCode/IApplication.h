@@ -1,6 +1,13 @@
 #pragma once
 
 
+class IGraphicDevice : public IUnknown
+{
+public:
+
+};
+
+
 class IApplication : public IUnknown
 {
 public:

@@ -46,6 +46,11 @@ WindowsApplication::WindowsApplication(
 
 WindowsApplication::~WindowsApplication()
 {
+    if (nullptr != mainWindow_)
+    {
+        delete mainWindow_;
+        mainWindow_ = nullptr;
+    }
 }
 
 HRESULT __stdcall WindowsApplication::QueryInterface(REFIID riid, void** ppvObject)
@@ -72,20 +77,20 @@ ULONG __stdcall WindowsApplication::Release(void)
 
 void __stdcall WindowsApplication::InitializeMainWindow(const wchar_t* className, const wchar_t* windowText)
 {
-    // NEW
+    // NEW -> WindowsApplication Destructor Delete
     mainWindow_ = new Window(className, windowText);
 
     WNDCLASS wc = {};
-    wc.style = 0;                               // Window 그리기 특성.
+    //wc.style = 0;                               // Window 그리기 특성.
     wc.lpfnWndProc = WindowProc;                // 메세지 함수 지정.
-    wc.cbClsExtra = 0;                          // 추가 메모리 사용 안함.
-    wc.cbWndExtra = 0;                          // 추가 메모리 사용 안함.
+    //wc.cbClsExtra = 0;                          // 추가 메모리 사용 안함.
+    //wc.cbWndExtra = 0;                          // 추가 메모리 사용 안함.
     wc.hInstance = hInstance_;                  // 인스턴스 핸들.
     //TODO
-    wc.hIcon = 0;                               // 아이콘 설정.
-    wc.hCursor = 0;                             // 커서 설정.
-    wc.hbrBackground;                           // 백그라운드 설정.
-    wc.lpszMenuName = NULL;                     // 메뉴 사용 설정.
+    //wc.hIcon = 0;                               // 아이콘 설정.
+    //wc.hCursor = 0;                             // 커서 설정.
+    //wc.hbrBackground;                           // 백그라운드 설정.
+    //wc.lpszMenuName = NULL;                     // 메뉴 사용 설정.
     wc.lpszClassName = className;               // 윈도우 클래스 이름(식별)
 
     RegisterClass(&wc);
@@ -99,14 +104,21 @@ void __stdcall WindowsApplication::InitializeMainWindow(const wchar_t* className
     mainWindow_->Show();
 }
 
-//TODO GetMessage -> PeepMessage
 void __stdcall WindowsApplication::WinPumpmessage()
 {
-    MSG msg = { };
-    while (GetMessage(&msg, NULL, 0, 0) > 0)
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+    MSG message = {};
+    while (PeekMessage(&message, NULL, 0, 0, PM_REMOVE)) {
+        TranslateMessage(&message);
+        DispatchMessage(&message);
+
+        if (message.message == WM_DESTROY) {
+            if (isApplicationQuit_) {
+                break;
+            }
+        }
+        if (message.message == WM_QUIT) {
+            isApplicationQuit_ = true;
+        }
     }
 }
 
