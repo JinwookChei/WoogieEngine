@@ -33,6 +33,8 @@ private:
 
 	int nCmdShow_;
 
+	HICON iCon_;
+
 	Window* mainWindow_;
 
 	ULONG refCount_;

@@ -37,6 +37,7 @@ WindowsApplication::WindowsApplication(
     : hInstance_(hInstance),
     pCmdLine_(pCmdLine),
     nCmdShow_(nCmdShow),
+    iCon_(nullptr),
     mainWindow_(nullptr),
     refCount_(1),
     isApplicationQuit_(false)
@@ -80,14 +81,25 @@ void __stdcall WindowsApplication::InitializeMainWindow(const wchar_t* className
     // NEW -> WindowsApplication Destructor Delete
     mainWindow_ = new Window(className, windowText);
 
+    Path iConPath(L"..//Resource//LogoResize.ico");
+    if (false == iConPath.IsFile())
+    {
+        __debugbreak();
+    }
+    
+    iCon_ = (HICON)LoadImage(NULL, iConPath.GetPathWString().c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED);
+    if (nullptr == iCon_)
+    {
+        __debugbreak();
+    }
+
     WNDCLASS wc = {};
     //wc.style = 0;                               // Window 그리기 특성.
     wc.lpfnWndProc = WindowProc;                // 메세지 함수 지정.
     //wc.cbClsExtra = 0;                          // 추가 메모리 사용 안함.
     //wc.cbWndExtra = 0;                          // 추가 메모리 사용 안함.
     wc.hInstance = hInstance_;                  // 인스턴스 핸들.
-    //TODO
-    //wc.hIcon = 0;                               // 아이콘 설정.
+    wc.hIcon = iCon_;                               // 아이콘 설정.
     //wc.hCursor = 0;                             // 커서 설정.
     //wc.hbrBackground;                           // 백그라운드 설정.
     //wc.lpszMenuName = NULL;                     // 메뉴 사용 설정.
