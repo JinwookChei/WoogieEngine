@@ -1,19 +1,39 @@
 #include "stdafx.h"
 
+
+
+typedef bool (*DLL_CREATE_APPLICATION)(void**, HINSTANCE, PWSTR, int);
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
 
-   
+	HMODULE loadApplication = LoadLibrary(APPLICATION_NAME);
+	const wchar_t* MainWindowClassName = L"MAIN";
+	const wchar_t* MainWindowText = L"WOOGIE ENGINE";
 
-    // Run the message loop.
+	if (nullptr == loadApplication)
+	{
+		__debugbreak();
+		return 0;
+	}
 
-    MSG msg = { };
-    while (GetMessage(&msg, NULL, 0, 0) > 0)
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
+	DLL_CREATE_APPLICATION fpCreateApplication = (DLL_CREATE_APPLICATION)GetProcAddress(loadApplication, "CreateWindowsApplication");
 
-    return 0;
+	IApplication* windowApplication = nullptr;
+	if (false == fpCreateApplication((void**)&windowApplication, hInstance, pCmdLine, nCmdShow))
+	{
+		__debugbreak();
+		return 0;
+	}
+
+	windowApplication->InitializeMainWindow(L"MAIN", L"WOOGIE ENGINE");
+
+	while(1)
+	{
+		windowApplication->WinPumpmessage();
+	}
+	
+
+	return 0;
 }
 

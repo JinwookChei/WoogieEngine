@@ -2,8 +2,6 @@
 #include "WindowsApplication.h"
 
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
 WindowsApplication* GApplication = nullptr;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -32,18 +30,20 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 
-WindowsApplication::WindowsApplication(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
-	: hInstance_(hInstance),
+WindowsApplication::WindowsApplication(
+    HINSTANCE hInstance, 
+    PWSTR pCmdLine, 
+    int nCmdShow)
+    : hInstance_(hInstance),
     pCmdLine_(pCmdLine),
     nCmdShow_(nCmdShow),
     mainWindow_(nullptr),
-	refCount_(1),
-	isApplicationQuit_(false)
+    refCount_(1),
+    isApplicationQuit_(false)
 {
     GApplication = this;
 }
 
-//TODO
 WindowsApplication::~WindowsApplication()
 {
 }
@@ -72,6 +72,7 @@ ULONG __stdcall WindowsApplication::Release(void)
 
 void __stdcall WindowsApplication::InitializeMainWindow(const wchar_t* className, const wchar_t* windowText)
 {
+    // NEW
     mainWindow_ = new Window(className, windowText);
 
     WNDCLASS wc = {};
@@ -89,15 +90,24 @@ void __stdcall WindowsApplication::InitializeMainWindow(const wchar_t* className
 
     RegisterClass(&wc);
 
+
     if (false == mainWindow_->Initialize())
     {
         __debugbreak();
     }
+
+    mainWindow_->Show();
 }
 
-//TODO
+//TODO GetMessage -> PeepMessage
 void __stdcall WindowsApplication::WinPumpmessage()
 {
+    MSG msg = { };
+    while (GetMessage(&msg, NULL, 0, 0) > 0)
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
 }
 
 bool __stdcall WindowsApplication::ApplicationQuit()
