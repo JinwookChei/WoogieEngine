@@ -7,9 +7,9 @@
 #include <crtdbg.h>
 #define new new (_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif  // _DEBUG
+
+
 #ifdef _DEBUG
-
-
 // UTILITY DLL
 #ifdef _WIN64
 #pragma comment(lib, "Utility_x64_Debug")
@@ -37,10 +37,22 @@
 #include "filesystem"
 #include "Utility/Path.h"
 
-#include "Win32Image.h"
-#include "Win32GraphicDevice.h"
+
+#if defined(new) && defined(_DEBUG)
+#pragma push_macro("new")
+#undef new
+#include <gdiplus.h>
+#pragma pop_macro("new")
+#else
+#include <gdiplus.h>
+#endif
+
+
 #include "Window.h"
 #include "WindowsApplication.h"
+#include "Win32Image.h"
+#include "Win32GraphicDevice.h"
+
 
 
 extern WindowsApplication* GApplication;

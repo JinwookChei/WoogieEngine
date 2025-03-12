@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "WindowsApplication.h"
 
-
 WindowsApplication* GApplication = nullptr;
+
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -81,7 +81,7 @@ void __stdcall WindowsApplication::InitializeMainWindow(const wchar_t* className
     // NEW -> WindowsApplication Destructor Delete
     mainWindow_ = new Window(className, windowText);
 
-    Path iConPath(L"..//Resource//LogoResize.ico");
+    Path iConPath(L"..//Resource//Logo//LogoResize.ico");
     if (false == iConPath.IsFile())
     {
         __debugbreak();
@@ -112,12 +112,14 @@ void __stdcall WindowsApplication::InitializeMainWindow(const wchar_t* className
     {
         __debugbreak();
     }
-
+    
     mainWindow_->Show();
+
 }
 
 void __stdcall WindowsApplication::WinPumpmessage()
 {
+
     MSG message = {};
     while (PeekMessage(&message, NULL, 0, 0, PM_REMOVE)) {
         TranslateMessage(&message);
